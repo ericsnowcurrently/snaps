@@ -1,0 +1,165 @@
+name: cpython-esnow
+version: 0.1
+summary: CPython is the reference implementation of the Python programming language.
+description: |
+    First released in 1991 by Guido van Rossum, the Python programming
+    language has steadily grown in popularity.  This is in no small part
+    due to the simplicity of the language, sometimes described as
+    "executable pseudo-code", and to a comprehensive standard library
+    ("batteries included").  While several other Python implementations
+    have entered popular use, CPython remains the reference
+    implementation.
+confinement: strict
+
+apps:
+    cpython-esnow:
+        command: python3
+        plugs:
+            - network
+            - network-bind
+            #- home
+    #3.5:
+    #    command: python3.5
+    #    plugs:
+    #        - network
+    #        - network-bind
+    #        #- home
+    #system:  # a restricted system Python
+    #    command: spython
+    #    plugs:
+    #        - network
+    #        - network-bind
+
+parts:
+    cpython-tip:
+        plugin: autotools
+        configflags:
+            - --enable-ipv6
+        install-via: prefix
+        source: https://hg.python.org/cpython
+        source-type: hg
+        source-branch: default
+        build-packages:
+            # See: apt-get build-dep --dryrun python3.5
+            ##############
+            # for build/packaging
+            - build-essential
+            - debhelper
+            - dh-strip-nondeterminism
+            - intltool-debian
+            - pkg-config
+            - po-debconf
+            - quilt
+            ##############
+            # for docs:
+            - docutils-common
+            - libcroco3
+            - libjs-jquery
+            - libjs-modernizr
+            - libjs-sphinxdoc
+            - libjs-underscore
+            - python-alabaster
+            - python-babel
+            - python-babel-localedata
+            - python-docutils
+            - python-jinja2
+            - python-markupsafe
+            - python-pkg-resources
+            - python-pygments
+            - python-roman
+            - python-six
+            - python-sphinx
+            - python-sphinx-rtd-theme
+            - python-tz
+            - sphinx-common
+            - sphinx-rtd-theme-common
+            ##############
+            # for stdlib extension modules:
+            - diffstat
+            - gettext
+            - libarchive-zip-perl
+            - libbz2-dev
+            - libdb-dev
+            - libdb5.3-dev
+            - libexpat1-dev
+            - libffi-dev
+            - libfile-stripnondeterminism-perl
+            - libgdbm-dev
+            - liblzma-dev
+            - libmpdec-dev
+            - libncursesw5-dev
+            - libpng12-dev
+            - libreadline-dev
+            - libreadline6-dev
+            - libsqlite3-dev
+            - libssl-dev
+            - libtimedate-perl
+            - libtinfo-dev
+            - libunistring0
+            - sharutils
+            ##############
+            # for tkinter:
+            #- blt-dev
+            #- fonts-font-awesome
+            #- fonts-lato
+            #- libbluetooth-dev
+            #- libbluetooth3
+            #- libfontconfig1-dev
+            #- libfontenc1
+            #- libfreetype6-dev
+            #- libice-dev
+            #- libpixman-1-0
+            #- libsm-dev
+            #- libtcl8.6
+            #- libtk8.6
+            #- libxaw7
+            #- libxfont1
+            #- libxft-dev
+            #- libxft2
+            #- libxkbfile1
+            #- libxmu6
+            #- libxpm4
+            #- libxrender-dev
+            #- libxss-dev
+            #- libxss1
+            #- libxt-dev
+            #- libxt6
+            #- tcl
+            #- tcl-dev
+            #- tcl8.6
+            #- tcl8.6-dev
+            #- tk
+            #- tk-dev
+            #- tk8.6
+            #- tk8.6-blt2.5
+            #- tk8.6-dev
+            #- x11-xkb-utils
+            #- x11proto-render-dev
+            #- x11proto-scrnsaver-dev
+            #- xserver-common
+            #- xvfb
+        #after:
+        #    - cpython-3.5
+    # XXX CPython will be moving to github in late 2016.
+    #cpython-tip:
+    #    plugin: autotools
+    #    configflags:
+    #        - --enable-ipv6
+    #    install-via: prefix
+    #    source: https://github.com/python/cpython.git
+    #    #source-type: git
+    #    source-branch: master
+    #    #after:
+    #    #    - cpython-3.5
+    #cpython-3.5:
+    #    plugin: autotools
+    #    configflags:
+    #        - --enable-ipv6
+    #    install-via: prefix
+    #    source: https://github.com/python/cpython.git
+    #    #source-type: git
+    #    source-branch: 3.5
+    #    #source-tag: v3.5.2
+    #cpython-debug:
+    #    plugin: autotools
+    #    configflags: --with-pydebug --enable-ipv6
