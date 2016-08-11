@@ -1,0 +1,47 @@
+
+
+*******************************************
+* tmate uses setgid() and geteuid() syscalls, which snappy does not support
+
+Workaround: use devmode
+
+See: https://developer.ubuntu.com/en/snappy/build-apps/debug/#common-problems
+
+/var/log/syslog:
+    Aug  9 11:02:55 dev-xenial kernel: [13626.691174] audit: type=1326 audit(1470762175.345:67): auid=1000 uid=1000 gid=1000 ses=9 pid=6258 comm="tmate" exe="/snap/tmate-esnow/x1/usr/bin/tmate" sig=31 arch=c000003e syscall=46 compat=0 ip=0x7f328d832bd0 code=0x0
+    Aug  9 11:02:55 dev-xenial kernel: [13626.695827] audit: type=1326 audit(1470762175.349:68): auid=1000 uid=1000 gid=1000 ses=9 pid=6261 comm="tmate" exe="/snap/tmate-esnow/x1/usr/bin/tmate" sig=31 arch=c000003e syscall=49 compat=0 ip=0x7f328d832837 code=0x0
+
+See: http://docs.cs.up.ac.za/programming/asm/derick_tut/syscalls.html
+
+
+*******************************************
+* using devmode, the tmate command still exits with a return code of 1
+
+Resolved(?): wrap commands in "script /dev/null"
+
+/var/log/syslog:
+    <crickets>
+
+tmate-esnow tmux server log:
+    fatal: tty_init: ttyname failed
+
+See: https://bugs.launchpad.net/snappy/+bug/1611493
+
+tmate-esnow.tmux tmux server log:
+    1470767954.998612 fatal: cmd_new_session_exec: tcgetattr failed: Bad file descriptor
+
+See: https://github.com/tmux/tmux/blob/dc42c35/client.c#L315
+See: http://linux.die.net/man/3/tcgetattr
+
+
+*******************************************
+* using devmode there are issues with networking
+
+Resolved: using the "network" plug
+
+/var/log/syslog:
+    Aug  9 11:00:58 dev-xenial kernel: [13509.916860] audit: type=1400 audit(1470762058.569:56): apparmor="ALLOWED" operation="open" profile="snap.tmate-esnow.tmate" name="/etc/hosts" pid=6128 comm="tmate" requested_mask="r" denied_mask="r" fsuid=1000 ouid=0
+    Aug  9 11:00:58 dev-xenial kernel: [13509.917333] audit: type=1400 audit(1470762058.569:57): apparmor="ALLOWED" operation="open" profile="snap.tmate-esnow.tmate" name="/run/resolvconf/resolv.conf" pid=6128 comm="tmate" requested_mask="r" denied_mask="r" fsuid=1000 ouid=0
+    Aug  9 11:00:58 dev-xenial kernel: [13509.917408] audit: type=1400 audit(1470762058.569:58): apparmor="ALLOWED" operation="create" profile="snap.tmate-esnow.tmate" pid=6128 comm="tmate" family="inet" sock_type="dgram" protocol=0 requested_mask="create" denied_mask="create"
+    Aug  9 11:00:58 dev-xenial kernel: [13509.917526] audit: type=1400 audit(1470762058.569:59): apparmor="ALLOWED" operation="sendmsg" profile="snap.tmate-esnow.tmate" pid=6128 comm="tmate" family="inet" sock_type="dgram" protocol=17 requested_mask="send" denied_mask="send"
+    Aug  9 11:00:58 dev-xenial kernel: [13509.917888] audit: type=1400 audit(1470762058.569:60): apparmor="ALLOWED" operation="sendmsg" profile="snap.tmate-esnow.tmate" pid=6128 comm="tmate" lport=40101 family="inet" sock_type="dgram" protocol=17 requested_mask="send" denied_mask="send"

@@ -1,0 +1,29 @@
+name: tmate-esnow
+version: 1.8.10
+summary: "Instant terminal sharing"
+description: A fork of tmux that supports sharing sessions across the internet via SSH.
+confinement: strict
+
+apps:
+  tmate-esnow:
+    command: script -qc tmate /dev/null
+    plugs:
+      - network
+  tmux:
+    command: script -qc tmux /dev/null
+
+  tty-broken:
+    command: tty
+
+  tty:
+    command: script -qc tty /dev/null
+
+parts:
+  tmate:
+    plugin: nil
+    stage-packages:
+      - tmate
+  tmux:
+    plugin: nil
+    stage-packages:
+      - tmux
