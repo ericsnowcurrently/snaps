@@ -19,19 +19,41 @@ apps:
 
 parts:
     pypy-tip:
-        plugin: pypy
-        install-via: prefix
+        plugin: x-pypy
         source: https://bitbucket.org/pypy/pypy
         source-type: hg
         source-branch: release-5.x
         #source-branch: default
         build-packages:
+            # see http://pypy.readthedocs.io/en/latest/build.html#install-build-time-dependencies
+            ##############
+            # for build/packaging
+            - pypy
+            - make
+            - pkg-config
+            - gcc
+            - libffi-dev
+            - libgc-dev
+            ##############
+            # for stdlib extension modules:
+            #- libz-dev
+            - libbz2-dev
+            - libsqlite3-dev
+            #- libncurses-dev
+            - libncurses5-dev
+            - libexpat1-dev
+            - libssl-dev
+            - libgdbm-dev
+            #- tk-dev
+        organize:
+            pypy-c: pypy
+        jit: true
     #pypy3:
-    #    plugin: pypy
-    #    install-via: prefix
-    #    source: https://bitbucket.org/pypy/pypy
-    #    source-type: hg
     #    source-branch: release-pypy3.3-v5
     #    source-branch: py3.5
     #    #source-branch: py3.5-async
+    #    #source-branch: py3k
     #    build-packages:
+    #        - liblzma-dev
+    #pypy-reverse-debugger:
+    #    source-branch: reverse-debugger
